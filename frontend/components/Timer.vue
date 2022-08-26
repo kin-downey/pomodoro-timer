@@ -46,6 +46,7 @@
   </div>
 </template>
 <script>
+import sound from '@/static/sounds/notificate.mp3'
 import Push from 'push.js'
 import VueTimepicker from "vue2-timepicker/src/vue-timepicker.vue";
 export default {
@@ -123,8 +124,15 @@ export default {
       }
     },
   },
+  mounted() {
+    if(Push.Permission.get() != 'granted'){
+      Push.Permission.request()
+    }
+  },
   methods: {
     push_test(){
+      const audio = new Audio(sound)
+      audio.play()
       Push.create("hello");
       console.log('hello')
     },
@@ -154,6 +162,15 @@ export default {
         this.second -= 1;
         this.value -= this.atom;
         if (this.second == 0) {
+          const audio = new Audio(sound)
+          audio.play()
+          Push.create('作業時間が終了しました！', {
+            body: '5〜10分の休憩をしましょう！',
+            onClick: function(){
+              this.close()
+              location.href = 'https://www.yahoo.co.jp'
+            }
+          })
           this.timer_reset();
           this.paused = true;
         }
