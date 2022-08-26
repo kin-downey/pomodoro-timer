@@ -17,6 +17,7 @@
         v-model="time_obj"
         @input="set_second"
         @open="timer_reset"
+        lazy
       ></vue-timepicker>
     </v-row>
     <v-row class="justify-center mt-3">
@@ -47,17 +48,17 @@
 <script>
 import sound from '@/static/sounds/notificate.mp3'
 import Push from 'push.js'
-import VueTimepicker from "vue2-timepicker/src/vue-timepicker.vue";
+import VueTimepicker from 'vue2-timepicker/src/vue-timepicker.vue'
 export default {
   components: {
-    "vue-timepicker": VueTimepicker,
+    'vue-timepicker': VueTimepicker,
   },
   data() {
     return {
       interval: {},
       time_obj: {
-        mm: "25",
-        ss: "00",
+        mm: '25',
+        ss: '00',
       },
       min: 0,
       sec: 0,
@@ -66,130 +67,123 @@ export default {
       paused: true,
       processing: true,
       atom: null,
-    };
+    }
   },
   beforeDestroy() {
-    clearInterval(this.interval);
+    clearInterval(this.interval)
   },
   computed: {
     timer_width() {
       switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return 90;
-        case "sm":
-          return 120;
-        case "md":
-          return 130;
-        case "lg":
-          return 150;
-        case "xl":
-          return 300;
+        case 'xs':
+          return 90
+        case 'sm':
+          return 120
+        case 'md':
+          return 130
+        case 'lg':
+          return 150
+        case 'xl':
+          return 300
       }
-      return "hello";
+      return 'hello'
     },
     timer_size() {
       switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return 300;
-        case "sm":
-          return 350;
-        case "md":
-          return 400;
-        case "lg":
-          return 500;
-        case "xl":
-          return 600;
+        case 'xs':
+          return 300
+        case 'sm':
+          return 350
+        case 'md':
+          return 400
+        case 'lg':
+          return 500
+        case 'xl':
+          return 600
       }
-      return "hello";
+      return 'hello'
     },
     timer_color() {
-      return this.$store.state.timer_color;
+      return this.$store.state.timer_color
     },
     formatted_timer() {
-      var min = Math.floor(this.second / 60);
-      var sec = this.second % 60;
+      var min = Math.floor(this.second / 60)
+      var sec = this.second % 60
       if (String(min).length == 1) {
         if (String(sec).length == 1) {
-          return "0" + String(min) + ":0" + String(sec);
+          return '0' + String(min) + ':0' + String(sec)
         } else {
-          return "0" + String(min) + ":" + String(sec);
+          return '0' + String(min) + ':' + String(sec)
         }
       } else {
         if (String(sec).length == 1) {
-          return String(min) + ":0" + String(sec);
+          return String(min) + ':0' + String(sec)
         } else {
-          return String(min) + ":" + String(sec);
+          return String(min) + ':' + String(sec)
         }
       }
     },
   },
   mounted() {
-    if(Push.Permission.get() != 'granted'){
+    if (Push.Permission.get() != 'granted') {
       Push.Permission.request()
     }
   },
   methods: {
-    push_test(){
-      const audio = new Audio(sound)
-      audio.play()
-      Push.create("hello");
-      console.log('hello')
-    },
     set_min(min) {
       if (String(min).length == 1) {
-        this.time_obj["mm"] = "0" + String(min);
+        this.time_obj['mm'] = '0' + String(min)
       } else {
-        this.time_obj["mm"] = String(min);
+        this.time_obj['mm'] = String(min)
       }
     },
     set_sec(sec) {
       if (String(sec).length == 1) {
-        this.time_obj["ss"] = "0" + String(sec);
+        this.time_obj['ss'] = '0' + String(sec)
       } else {
-        this.time_obj["ss"] = String(sec);
+        this.time_obj['ss'] = String(sec)
       }
     },
     set_second() {
-      console.log("set_seconda");
+      console.log('set_second')
       this.second =
-        Number(this.time_obj["mm"]) * 60 + Number(this.time_obj["ss"]);
-      this.atom = 100 / this.second;
+        Number(this.time_obj['mm']) * 60 + Number(this.time_obj['ss'])
+      this.atom = 100 / this.second
     },
     timer_start() {
-      this.paused = false;
+      this.paused = false
       this.interval = setInterval(() => {
-        this.second -= 1;
-        this.value -= this.atom;
+        this.second -= 1
+        this.value -= this.atom
         if (this.second == 0) {
           const audio = new Audio(sound)
           audio.play()
           Push.create('作業時間が終了しました！', {
             body: '5〜10分の休憩をしましょう！',
-            onClick: function(){
+            onClick: function () {
               this.close()
-              location.href = 'https://www.yahoo.co.jp'
-            }
+            },
           })
-          this.timer_reset();
-          this.paused = true;
+          this.timer_reset()
+          this.paused = true
         }
-      }, 1000);
+      }, 1000)
     },
     timer_pause() {
-      this.set_min(Math.floor(this.second / 60));
-      this.set_sec(this.second % 60);
-      this.paused = true;
-      clearInterval(this.interval);
+      this.set_min(Math.floor(this.second / 60))
+      this.set_sec(this.second % 60)
+      this.paused = true
+      clearInterval(this.interval)
     },
     timer_reset() {
-      clearInterval(this.interval);
-      this.time_obj["mm"] = "00";
-      this.time_obj["ss"] = "00";
-      this.second = 0;
-      this.value = 100;
+      clearInterval(this.interval)
+      this.time_obj['mm'] = '00'
+      this.time_obj['ss'] = '00'
+      this.second = 0
+      this.value = 100
     },
   },
-};
+}
 </script>
 <style scoped>
 .v-progress-circular {
