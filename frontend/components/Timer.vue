@@ -1,6 +1,5 @@
 <template>
   <div>
-    <v-btn @click="push_test()">notificate</v-btn>
     <div class="text-center">
       <v-progress-circular
         :rotate="-90"
