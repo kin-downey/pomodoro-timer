@@ -1,5 +1,6 @@
 <template>
   <div>
+    <v-btn @click="push_test()">notificate</v-btn>
     <div class="text-center">
       <v-progress-circular
         :rotate="-90"
@@ -45,6 +46,7 @@
   </div>
 </template>
 <script>
+import Push from 'push.js'
 import VueTimepicker from "vue2-timepicker/src/vue-timepicker.vue";
 export default {
   components: {
@@ -122,6 +124,10 @@ export default {
     },
   },
   methods: {
+    push_test(){
+      Push.create("hello");
+      console.log('hello')
+    },
     set_min(min) {
       if (String(min).length == 1) {
         this.time_obj["mm"] = "0" + String(min);
