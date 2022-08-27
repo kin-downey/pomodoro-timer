@@ -168,7 +168,7 @@ export default {
         // タイマーの時間を減らす
         this.set_min(Math.floor(this.second / 60))
         this.set_sec(this.second % 60)
-        if (this.second == 0) {
+        if (this.second < 0) {
           const audio = new Audio(sound)
           audio.play()
           Push.create('作業時間が終了しました！', {
