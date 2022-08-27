@@ -11,13 +11,12 @@
         <h1>{{ formatted_timer }}</h1>
       </v-progress-circular>
     </div>
-    <v-row class="justify-center mt-4" v-if="paused">
+    <v-row class="justify-center mt-4">
       <vue-timepicker
         format="mm:ss"
         v-model="time_obj"
         @input="set_second"
         @open="timer_reset"
-        lazy
       ></vue-timepicker>
     </v-row>
     <v-row class="justify-center mt-3">
@@ -55,11 +54,15 @@ export default {
   },
   data() {
     return {
+      is_set_atom: false,
       interval: {},
       time_obj: {
         mm: '25',
         ss: '00',
       },
+      timer_min: 0,
+      timer_sec: 0,
+      timer_second: 0,
       min: 0,
       sec: 0,
       second: 0,
@@ -144,17 +147,27 @@ export default {
         this.time_obj['ss'] = String(sec)
       }
     },
+    set_atom() {
+      this.set_second()
+      this.atom = 100 / this.second
+    },
     set_second() {
       console.log('set_second')
       this.second =
         Number(this.time_obj['mm']) * 60 + Number(this.time_obj['ss'])
-      this.atom = 100 / this.second
     },
     timer_start() {
+      if(!this.is_set_atom){
+        this.set_atom()
+        this.is_set_atom = true
+      }
       this.paused = false
       this.interval = setInterval(() => {
         this.second -= 1
         this.value -= this.atom
+        // タイマーの時間を減らす
+        this.set_min(Math.floor(this.second / 60))
+        this.set_sec(this.second % 60)
         if (this.second == 0) {
           const audio = new Audio(sound)
           audio.play()
@@ -176,6 +189,7 @@ export default {
       clearInterval(this.interval)
     },
     timer_reset() {
+      this.is_set_atom = false
       clearInterval(this.interval)
       this.time_obj['mm'] = '00'
       this.time_obj['ss'] = '00'
