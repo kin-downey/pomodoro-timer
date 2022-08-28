@@ -54,6 +54,7 @@ export default {
   },
   data() {
     return {
+      cycle_count: 0,
       is_set_atom: false,
       interval: {},
       time_obj: {
@@ -189,10 +190,19 @@ export default {
       clearInterval(this.interval)
     },
     timer_reset() {
+      // サイクルカウントをカウントアップ
+      this.cycle_count++
       this.is_set_atom = false
       clearInterval(this.interval)
-      this.time_obj['mm'] = '00'
-      this.time_obj['ss'] = '00'
+      // サイクル回数が偶数回の場合
+      if(this.cycle_count % 2 == 0){
+        this.time_obj['mm'] = '25'
+        this.time_obj['ss'] = '00'
+      }
+      else{
+        this.time_obj['mm'] = '05'
+        this.time_obj['ss'] = '00'
+      }
       this.second = 0
       this.value = 100
     },
