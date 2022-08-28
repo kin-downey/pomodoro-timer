@@ -1,6 +1,11 @@
 <template>
   <div>
     <div class="text-center">
+      <v-row justify="center" align-content="center">
+        <v-chip label class="ma-2" :color="timer_color" text-color="white">
+          サイクル回数 : {{ cycle_count }}
+        </v-chip>
+      </v-row>
       <v-progress-circular
         :rotate="-90"
         :size="timer_size"
@@ -158,7 +163,7 @@ export default {
         Number(this.time_obj['mm']) * 60 + Number(this.time_obj['ss'])
     },
     timer_start() {
-      if(!this.is_set_atom){
+      if (!this.is_set_atom) {
         this.set_atom()
         this.is_set_atom = true
       }
@@ -170,6 +175,7 @@ export default {
         this.set_min(Math.floor(this.second / 60))
         this.set_sec(this.second % 60)
         if (this.second < 0) {
+          this.cycle_count++
           const audio = new Audio(sound)
           audio.play()
           Push.create('作業時間が終了しました！', {
@@ -190,16 +196,13 @@ export default {
       clearInterval(this.interval)
     },
     timer_reset() {
-      // サイクルカウントをカウントアップ
-      this.cycle_count++
       this.is_set_atom = false
       clearInterval(this.interval)
       // サイクル回数が偶数回の場合
-      if(this.cycle_count % 2 == 0){
+      if (this.cycle_count % 2 == 0) {
         this.time_obj['mm'] = '25'
         this.time_obj['ss'] = '00'
-      }
-      else{
+      } else {
         this.time_obj['mm'] = '05'
         this.time_obj['ss'] = '00'
       }
