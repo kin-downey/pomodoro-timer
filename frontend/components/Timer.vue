@@ -3,7 +3,7 @@
     <div class="text-center">
       <v-row justify="center" align-content="center">
         <v-chip label class="ma-2" :color="timer_color" text-color="white">
-          サイクル回数 : {{ cycle_count }}
+        サイクル回数 : {{ parseInt(cycle_count/2) }}
         </v-chip>
       </v-row>
       <v-progress-circular
